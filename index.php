@@ -31,15 +31,27 @@ $app->get('/next-runs', function(Request $request) use($app) {
     
     $runDates = array();
     $cron = Cron\CronExpression::factory($formValues['expr']);
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 0; $i < $formValues['runs']; $i++) {
         $runDates[] = $app->escape($cron->getNextRunDate('now', $i)->format('Y-m-d H:i:s'));
     }
     return implode("<br />", $runDates);
 });
 
 $app->get('/', function(Request $request) use ($app) {
-    $form = $app['form.factory']->createBuilder('form')
+    $runs = array();
+    foreach( range(5, 50, 5) as $step) {
+        $runs[$step] = $step;
+    }
+    
+    $defaults = array(
+        'runs' => 15,
+    );
+    
+    $form = $app['form.factory']->createBuilder('form', $defaults)
         ->add('expr')
+        ->add('runs', 'choice', array(
+                'choices' => $runs
+        ))
         ->getForm();
     
     $form->handleRequest($request);
