@@ -1,0 +1,10 @@
+{
+    "minimum-stability": "dev",
+    "require": {
+        "silex/silex": "~1.1",
+        "symfony/form": "~2.4",
+        "symfony/twig-bridge": "~2.4",
+        "symfony/translation": "~2.4",
+        "mtdowling/cron-expression": "1.0.*"
+    }
+}
