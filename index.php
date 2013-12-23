@@ -19,10 +19,10 @@ $app->register(new TranslationServiceProvider(), array(
 ));
 
 $app->error(function (\Exception $e, $code) use($app) {
-    $msg = 'We are sorry, but something went terribly wrong.';
     if ($app['debug']) {
-        $msg .= $e->getMessage();
+        return;
     }
+    $msg = 'We are sorry, but something went terribly wrong.';
     return new Response($msg);
 });
 
