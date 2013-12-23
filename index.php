@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/lib/formatting.php';
 
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -31,13 +32,17 @@ $app->get('/next-runs', function(Request $request) use($app) {
     
     $runDates = array();
     $cron = Cron\CronExpression::factory($formValues['expr']);
+    $now = new DateTime("now");
     $prevRundate = null;
     for ($i = 0; $i < $formValues['runs']; $i++) {
-        $runDate = $cron->getNextRunDate('now', $i);
+        $runDate = $cron->getNextRunDate($now, $i);
         
-        if ($prevRundate) {
-            $diff = $prevRundate->diff($runDate);
-            $runDates[] = '<span class="diff">'. $app->escape($diff->format('%R%H:%I:%S')) .'</span>';
+        if (!$prevRundate) {
+            $humanDiff = human_time_diff($runDate->getTimestamp(), $now->getTimestamp());
+            $runDates[] = '<div class="firstRun">First run in aprox. '. $humanDiff .'</div>';
+        } else {
+            $humanDiff = human_time_diff($prevRundate->getTimestamp(), $runDate->getTimestamp());
+            $runDates[] = '<span class="diff">'. $humanDiff .'</span>';
         }
         $runDates[] = $app->escape($runDate->format('Y-m-d H:i:s'));
         
