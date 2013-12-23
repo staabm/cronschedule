@@ -31,8 +31,17 @@ $app->get('/next-runs', function(Request $request) use($app) {
     
     $runDates = array();
     $cron = Cron\CronExpression::factory($formValues['expr']);
+    $prevRundate = null;
     for ($i = 0; $i < $formValues['runs']; $i++) {
-        $runDates[] = $app->escape($cron->getNextRunDate('now', $i)->format('Y-m-d H:i:s'));
+        $runDate = $cron->getNextRunDate('now', $i);
+        
+        if ($prevRundate) {
+            $diff = $prevRundate->diff($runDate);
+            $runDates[] = '<span class="diff">'. $app->escape($diff->format('%R%H:%I:%S')) .'</span>';
+        }
+        $runDates[] = $app->escape($runDate->format('Y-m-d H:i:s'));
+        
+        $prevRundate = $runDate;
     }
     return implode("<br />", $runDates);
 });

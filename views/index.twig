@@ -11,8 +11,17 @@
             margin-right: 10px;
             display: inline-block;
         }
+        
+        .diff {
+            margin-left: 140px;
+        }
+        
+        #exprSchedule {
+            float:left;
+            margin-right: 15px;
+        }
     </style>
-    <div id="exprSchedule" style="float:left; margin-right: 10px;"></div>
+    <div id="exprSchedule"></div>
     <form id="exprForm" action="index.php/next-runs" method="get">
         {{ form_widget(form) }}
         <input type="submit" name="submit" />
